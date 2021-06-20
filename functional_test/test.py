@@ -32,8 +32,8 @@ class NewVisitorTest(LiveServerTestCase):
                     raise
                 time.sleep(0.5)
 
-    def test_can_start_a_list_and_retrieve_it_later(self):
-        """Тест: можно начать список и получить его позже"""
+    def test_can_start_a_list_for_one_user(self):
+        """тест: можно начать список для одного пользователя"""
         # Эдит слышала про крутое новое онлайн-приложение со списком
         # неотложных дел. Она решает оценить его домашнюю страницу
         self.browser.get(self.live_server_url)
@@ -113,7 +113,7 @@ class NewVisitorTest(LiveServerTestCase):
 
         # Опять-таки, нет ни следа от списка Эдит
         page_text = self.browser.find_element_by_tag_name('body').text
-        self.assertIn('Купить павлиньи перья', page_text)
+        self.assertNotIn('Купить павлиньи перья', page_text)
         self.assertNotIn('Сделать мушку', page_text)
 
         # Удовлетворенные, они оба ложатся спать
