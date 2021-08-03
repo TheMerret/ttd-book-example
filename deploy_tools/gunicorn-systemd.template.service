@@ -1,0 +1,13 @@
+[Unit]
+Description=Gunicorn server for SITENAME
+
+[Service]
+Restart=on-failure
+User=kali
+WorkingDirectory=/home/kali/sites/SITENAME/source
+ExecStart=/home/kali/sites/SITENAME/virtualenv/bin/gunicorn \
+--bind unix:/tmp/SITENAME.socket \
+superlists.wsgi:application
+
+[Install]
+WantedBy=multi-user.target
