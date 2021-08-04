@@ -22,9 +22,9 @@
 ## Структура папок:
 Если допустить, что есть учетная запись пользователя в /home/username
 
-sites
-└── SITENAME
-    ├── database
-    ├── source
-    ├── static
-    └── virtualenv
+    sites
+    └── SITENAME
+        ├── database
+        ├── source
+        ├── static
+        └── virtualenv
