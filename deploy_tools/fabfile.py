@@ -40,7 +40,11 @@ def _update_settings(source_folder, site_host):
     sed(
         settings_path,
         'ALLOWED_HOSTS = .+$',
-        f'ALLOWED_HOSTS = ["{site_host}"]'
+        "import subprocess\\n"
+        """local_ip = subprocess.check_output(f"ip route get 1 """
+        """| awk -F{chr(39)}src{chr(39)} {chr(39)}"+"{print $2; exit}"+f"{chr(39)}",shell=True)"""
+        """.decode().split()[0]\\n"""
+        "ALLOWED_HOSTS = [local_ip]"
     )
     secret_key_file = source_folder + '/superlists/secret_key.py'
     if not exists(secret_key_file):
