@@ -1,12 +1,15 @@
 [Unit]
-Description=Gunicorn server for SITENAME
+Description=Gunicorn server for superlist-staging.notexists.com
 
 [Service]
 Restart=on-failure
 User=kali
+Environment=EMAIL_PASSWORD=SEKRIT
 WorkingDirectory=/home/kali/sites/SITENAME/source
 ExecStart=/home/kali/sites/SITENAME/virtualenv/bin/gunicorn \
 --bind unix:/tmp/SITENAME.socket \
+--access-logfile ../access.log \
+--error-logfile ../error.log \
 superlists.wsgi:application
 
 [Install]
