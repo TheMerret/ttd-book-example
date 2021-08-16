@@ -10,7 +10,8 @@ class MyListTest(FunctionalTest):
     def create_pre_authenticated_session(self, email):
         """создать предварительно аутентифицированный сеанс"""
         if self.staging_server:
-            session_key = create_session_on_server(self.staging_server, email)
+            session_key = create_session_on_server(self.staging_server, email,
+                                                   self.staging_server_site_name)
         else:
             session_key = create_pre_authenticated_session(email)
         ## установить cookie, которые нужны для первого посещения домена.

@@ -30,9 +30,10 @@ class FunctionalTest(StaticLiveServerTestCase):
         """Установка"""
         self.browser = webdriver.Firefox()
         self.staging_server = os.environ.get('STAGING_SERVER')
+        self.staging_server_site_name = os.environ.get('SITE_NAME')
         if self.staging_server is not None:
             self.live_server_url = 'http://' + self.staging_server
-            reset_database(self.staging_server)
+            reset_database(self.staging_server, self.staging_server_site_name)
 
     def tearDown(self) -> None:
         """Демонтаж"""
