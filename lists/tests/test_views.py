@@ -1,8 +1,12 @@
 from django.test import TestCase
 from django.utils.html import escape
+from django.contrib.auth import get_user_model
 from lists.models import Item, List
 from lists.forms import (DUPLICATE_ITEM_ERROR, EMPTY_ITEM_ERROR,
                          ExistingListItemForm, ItemForm)
+
+
+User = get_user_model()
 
 
 class HomePageTest(TestCase):
@@ -173,5 +177,13 @@ class MyListTest(TestCase):
 
     def test_my_lists_url_renders_my_lists_template(self):
         """URL «мои списки» использует шаблон «мои списки»"""
+        User.objects.create(email='a@b.com')
         response = self.client.get('/lists/users/a@b.com/')
         self.assertTemplateUsed(response, 'my_lists.html')
+
+    def test_passes_correct_owner_to_template(self):
+        """тест: передается правильный владелец в шаблон"""
+        User.objects.create(email='wrong@owner.com')
+        correct_user = User.objects.create(email='a@b.com')
+        response = self.client.get('/lists/users/a@b.com/')
+        self.assertEqual(response.context['owner'], correct_user)

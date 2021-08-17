@@ -1,6 +1,10 @@
 from django.shortcuts import render, redirect
+from django.contrib.auth import get_user_model
 from lists.models import List
 from lists.forms import ItemForm, ExistingListItemForm
+
+
+User = get_user_model()
 
 
 def home_page(request):
@@ -32,4 +36,6 @@ def new_list(request):
 
 
 def my_lists(request, email):
-    return render(request, 'my_lists.html')
+    """мои списки"""
+    owner = User.objects.get(email=email)
+    return render(request, 'my_lists.html', {'owner': owner})
