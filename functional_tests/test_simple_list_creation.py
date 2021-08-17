@@ -37,9 +37,7 @@ class NewVisitorTest(FunctionalTest):
         # Текстовое поле по-прежнему приглашает ее добавить еще один элемент.
         # Она вводит "Сделать мушку из павлиньих перьев"
         # (Эдит очень методична)
-        inputbox = self.get_item_input_box()
-        inputbox.send_keys('Сделать мушку из павлиньих перьев')
-        inputbox.send_keys(Keys.ENTER)
+        self.add_list_item('Сделать мушку из павлиньих перьев')
 
         # Страница снова обновляется, и теперь показывает оба элемента ее списка
         self.wait_for_row_in_list_table('1: Купить павлиньи перья')
@@ -51,10 +49,7 @@ class NewVisitorTest(FunctionalTest):
         """тест: многочисленные пользователи могут начать списки по разным url"""
         # Эдит начинает новый список
         self.browser.get(self.live_server_url)
-        inputbox = self.get_item_input_box()
-        inputbox.send_keys('Купить павлиньи перья')
-        inputbox.send_keys(Keys.ENTER)
-        self.wait_for_row_in_list_table('1: Купить павлиньи перья')
+        self.add_list_item('Buy peacock feathers')
 
         # Она замечает, что ее список имеет уникальный URL-адрес
         edith_list_url = self.browser.current_url
@@ -75,10 +70,7 @@ class NewVisitorTest(FunctionalTest):
 
         # Фрэнсис начинает новый список, вводя новый элемент. Он менее
         # интересен, чем список Эдит...
-        inputbox = self.get_item_input_box()
-        inputbox.send_keys('Купить молоко')
-        inputbox.send_keys(Keys.ENTER)
-        self.wait_for_row_in_list_table('1: Купить молоко')
+        self.add_list_item('Buy milk')
 
         # Фрэнсис получает уникальный URL-адрес
         francis_list_url = self.browser.current_url
