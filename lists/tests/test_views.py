@@ -146,7 +146,6 @@ class NewListViewIntegratedTest(TestCase):
         new_item = Item.objects.first()
         self.assertEqual(new_item.text, 'A new list item')
 
-    @unittest.skip
     def test_list_owner_is_saved_if_user_is_authenticated(self):
         """тест: владелец списка сохраняется, если
         пользователь аутентифицирован"""

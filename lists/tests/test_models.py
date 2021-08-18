@@ -94,3 +94,9 @@ class ListModelTest(TestCase):
     def test_list_owner_is_optional(self):
         """тест: владелец списка необязательный"""
         List().full_clean()  # не должно поднять исключение
+
+    def test_create_returns_new_list_object(self):
+        """тест: create возвращает новый объект списка"""
+        returned = List.create_new(first_item_text='new item text')
+        new_list = List.objects.first()
+        self.assertEqual(returned, new_list)
