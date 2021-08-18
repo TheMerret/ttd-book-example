@@ -1,6 +1,10 @@
 from django.test import TestCase
 from django.core.exceptions import ValidationError
+from django.contrib.auth import get_user_model
 from lists.models import Item, List
+
+
+User = get_user_model()
 
 
 class ListAndItemModelTest(TestCase):
@@ -67,3 +71,26 @@ class ListModelTest(TestCase):
         """тест: получен абсолютный url"""
         list_ = List.objects.create()
         self.assertEqual(list_.get_absolute_url(), f'/lists/{list_.id}/')
+
+    def test_method_create_new_creates_list_and_first_item(self):
+        """тест: метод create_new создает список и первый элемент"""
+        List.create_new(first_item_text='new item text')
+        new_item = Item.objects.first()
+        self.assertEqual(new_item.text, 'new item text')
+        new_list = List.objects.first()
+        self.assertEqual(new_item.list, new_list)
+
+    def test_method_create_new_optionally_saves_owner(self):
+        """тест: метод create_new необязательно сохраняет владельца"""
+        user = User.objects.create()
+        List.create_new(first_item_text='new item text', owner=user)
+        new_list = List.objects.first()
+        self.assertEqual(new_list.owner, user)
+
+    def test_lists_can_have_owners(self):
+        """тест: списки могут иметь владельца"""
+        List(owner=User())  # не должно поднять исключение
+
+    def test_list_owner_is_optional(self):
+        """тест: владелец списка необязательный"""
+        List().full_clean()  # не должно поднять исключение
