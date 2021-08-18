@@ -27,6 +27,10 @@ class ItemForm(forms.models.ModelForm):
         return super().save(commit=commit)
 
 
+class NewListForm:
+    """форма для нового списка"""
+
+
 class ExistingListItemForm(ItemForm):
     """форма для элемента существующего списка"""
 
