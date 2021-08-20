@@ -34,7 +34,7 @@ class NewVisitorTest(FunctionalTest):
         # Когда она нажимает enter, страница обновляется, и теперь страница
         # содержит "1: Купить павлиньи перья" в качестве элемента списка
         inputbox.send_keys(Keys.ENTER)
-        list_page.wait_for_row_in_list_table('1: Купить павлиньи перья')
+        list_page.wait_for_row_in_list_table('Купить павлиньи перья', 2)
 
         # Текстовое поле по-прежнему приглашает ее добавить еще один элемент.
         # Она вводит "Сделать мушку из павлиньих перьев"
@@ -42,8 +42,8 @@ class NewVisitorTest(FunctionalTest):
         list_page.add_list_item('Сделать мушку из павлиньих перьев')
 
         # Страница снова обновляется, и теперь показывает оба элемента ее списка
-        list_page.wait_for_row_in_list_table('1: Купить павлиньи перья')
-        list_page.wait_for_row_in_list_table('2: Сделать мушку из павлиньих перьев')
+        list_page.wait_for_row_in_list_table('Купить павлиньи перья', 1)
+        list_page.wait_for_row_in_list_table('Сделать мушку из павлиньих перьев', 2)
 
         # Она посещает этот URL-адрес – ее список по-прежнему там.
 

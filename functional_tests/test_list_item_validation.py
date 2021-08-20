@@ -27,7 +27,7 @@ class ItemValidationTest(FunctionalTest):
 
         # И она может отправить его успешно
         list_page.get_item_input_box().send_keys(Keys.ENTER)
-        list_page.wait_for_row_in_list_table('1: Buy milk')
+        list_page.wait_for_row_in_list_table('Buy milk', 1)
 
         # Как ни странно, Эдит решает отправить второй пустой элемент списка
         list_page.get_item_input_box().send_keys(Keys.ENTER)

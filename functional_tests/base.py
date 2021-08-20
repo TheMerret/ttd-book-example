@@ -5,7 +5,6 @@ from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.conf import settings
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
-from selenium.webdriver.common.keys import Keys
 from .server_tools import reset_database
 from .server_tools import create_session_on_server
 from .management.commands.create_session import create_pre_authenticated_session
@@ -83,14 +82,6 @@ class FunctionalTest(StaticLiveServerTestCase):
             timestamp=timestamp
         )
 
-    def add_list_item(self, item_text):
-        """добавить элемент списка"""
-        num_rows = len(self.browser.find_elements_by_css_selector('#id_list_table tr'))
-        self.get_item_input_box().send_keys(item_text)
-        self.get_item_input_box().send_keys(Keys.ENTER)
-        item_number = num_rows + 1
-        self.wait_for_row_in_list_table(f'{item_number}: {item_text}')
-
     @wait
     def wait_for(self, fn):
         return fn()
@@ -115,10 +106,6 @@ class FunctionalTest(StaticLiveServerTestCase):
         self.browser.find_element_by_name('email')
         navbar = self.browser.find_element_by_css_selector('.navbar')
         self.assertNotIn(email, navbar.text)
-
-    def get_item_input_box(self):
-        """получить поле ввода для элемента"""
-        return self.browser.find_element_by_id('id_text')
 
     def create_pre_authenticated_session(self, email):
         """создать предварительно аутентифицированный сеанс"""
