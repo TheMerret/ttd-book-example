@@ -54,3 +54,7 @@ class ListPage:
             email,
             [item.text for item in self.get_shared_with_list()]
         ))
+
+    def get_list_owner(self):
+        """получить владельца списка"""
+        return self.test.browser.find_element_by_id('id_list_owner').text

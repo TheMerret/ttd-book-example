@@ -1,6 +1,7 @@
 from selenium import webdriver
 from .base import FunctionalTest
 from .list_page import ListPage
+from .my_lists_page import MyListsPage
 
 
 def quit_if_possible(browser):
@@ -28,6 +29,7 @@ class SharingTest(FunctionalTest):
 
         # Эдит открывает домашнюю страницу и начинает новый список
         self.browser = edith_browser
+        self.browser.get(self.live_server_url)
         list_page = ListPage(self).add_list_item('Get help')
 
         # Она замечает опцию "Поделиться этим списком"
@@ -41,3 +43,22 @@ class SharingTest(FunctionalTest):
         # Страница обновляется и сообщает,
         # что теперь страница используется совместо с Анцифером:
         list_page.share_list_with('oniciferous@example.com')
+
+        # Анцифер переходит на страницу списков в своем браузере
+        self.browser = oni_browser
+        MyListsPage(self).go_to_my_lists_page()
+
+        # Он видит на ней список Эдит!
+        self.browser.find_element_by_link_text('Get help').click()
+
+        # На странице, которую Анцифер видит, говорится, что это список Эдит
+        self.wait_for(lambda: self.assertEqual(
+            list_page.get_list_owner(),
+            'edith@example.com'
+        ))
+        # Он добавляет элемент в список
+        list_page.add_list_item('Hi Edith!')
+        # Когда Эдит обновляет страницу, она видит дополнение Анцифера
+        self.browser = edith_browser
+        self.browser.refresh()
+        list_page.wait_for_row_in_list_table('Hi Edith!', 2)
