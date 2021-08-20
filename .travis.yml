@@ -4,12 +4,9 @@ python:
 addons:
   firefox: latest
 before_install:
-  - wget -N https://github.com/mozilla/geckodriver/releases/download/v0.29.1/geckodriver-v0.29.1-linux64.tar.gz -P ~/
-  - tar -xzf ~/geckodriver-v0.29.1-linux64.tar.gz -C ~/
-  - rm ~/geckodriver-v0.29.1-linux64.tar.gz
-  - sudo mv -f ~/geckodriver /usr/local/share
-  - sudo chmod +x /usr/local/share/geckodriver
-  - sudo ln -s /usr/local/share/geckodriver /usr/local/bin/geckodriver
+  - wget -N https://github.com/mozilla/geckodriver/releases/download/v0.29.1/geckodriver-v0.29.1-linux64.tar.gz -P ~/geckodriver.tar.gz
+  - tar -xzf ~/geckodriver.tar.gz -C ~/virtualenv/bin
+  - rm ~/geckodriver.tar.gz
 install:
   - pip install -r requirements.txt
 script:
