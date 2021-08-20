@@ -1,13 +1,17 @@
 import time
 import os
+from datetime import datetime
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.keys import Keys
 from .server_tools import reset_database
 
-
 MAX_WAIT = 10
+
+SCREEN_DUMP_LOCATION = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)), 'screendumps'
+)
 
 
 def wait(fn):
@@ -38,7 +42,43 @@ class FunctionalTest(StaticLiveServerTestCase):
 
     def tearDown(self) -> None:
         """Демонтаж"""
+        if self._test_has_failed():
+            os.makedirs(SCREEN_DUMP_LOCATION, exist_ok=True)
+            for ix, handle in enumerate(self.browser.window_handles):
+                self._window_id = ix
+                self.browser.switch_to.window(handle)
+                self.take_screenshot()
+                self.dump_html()
         self.browser.quit()
+        super().tearDown()
+
+    def _test_has_failed(self):
+        """тест не сработал"""
+        return any(error for (method, error) in self._outcome.errors)
+
+    def take_screenshot(self):
+        """взять снимок экрана"""
+        filename = self._get_filename() + '.png'
+        print('screenshotting to', filename)
+        self.browser.get_screenshot_as_file(filename)
+
+    def dump_html(self):
+        """выгрузить html"""
+        filename = self._get_filename() + '.html'
+        print('dumping page HTML to', filename)
+        with open(filename, 'w') as f:
+            f.write(self.browser.page_source)
+
+    def _get_filename(self):
+        """получить имя файла"""
+        timestamp = datetime.now().isoformat().replace(':', '.')[:19]
+        return '{folder}/{classname}.{method}-window{windowid}-{timestamp}'.format(
+            folder=SCREEN_DUMP_LOCATION,
+            classname=self.__class__.__name__,
+            method=self._testMethodName,
+            windowid=self._window_id,
+            timestamp=timestamp
+        )
 
     def add_list_item(self, item_text):
         """добавить элемент списка"""
