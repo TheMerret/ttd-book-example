@@ -22,6 +22,10 @@ class ListPage:
         """получить поле ввода для элемента"""
         return self.test.browser.find_element_by_id('id_text')
 
+    def get_error_element(self):
+        """получить элемент с ошибкой"""
+        return self.test.browser.find_element_by_css_selector('.has-error')
+
     def add_list_item(self, item_text):
         """добавить элемент списка"""
         new_item_no = len(self.get_table_rows()) + 1

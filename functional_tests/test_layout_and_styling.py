@@ -1,4 +1,5 @@
 from .base import FunctionalTest
+from .list_page import ListPage
 
 
 class LayoutAndStylingTest(FunctionalTest):
@@ -11,7 +12,7 @@ class LayoutAndStylingTest(FunctionalTest):
         self.browser.set_window_size(1024, 768)
 
         # Она замечает, что поле ввода аккуратно центрировано
-        inputbox = self.get_item_input_box()
+        inputbox = ListPage(self).get_item_input_box()
         self.assertAlmostEqual(
             inputbox.location['x'] + inputbox.size['width'] / 2,
             512,
@@ -19,7 +20,7 @@ class LayoutAndStylingTest(FunctionalTest):
         )
         # Она начинает новый список и видит, что поле ввода там тоже
         # аккуратно центировано
-        self.add_list_item('testing')
+        ListPage(self).add_list_item('testing')
         inputbox = self.get_item_input_box()
         self.assertAlmostEqual(
             inputbox.location['x'] + inputbox.size['width'] / 2,
