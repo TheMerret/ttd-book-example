@@ -2,10 +2,13 @@ import time
 import os
 from datetime import datetime
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
+from django.conf import settings
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.keys import Keys
 from .server_tools import reset_database
+from .server_tools import create_session_on_server
+from .management.commands.create_session import create_pre_authenticated_session
 
 MAX_WAIT = 10
 
@@ -116,3 +119,19 @@ class FunctionalTest(StaticLiveServerTestCase):
     def get_item_input_box(self):
         """получить поле ввода для элемента"""
         return self.browser.find_element_by_id('id_text')
+
+    def create_pre_authenticated_session(self, email):
+        """создать предварительно аутентифицированный сеанс"""
+        if self.staging_server:
+            session_key = create_session_on_server(self.staging_server, email,
+                                                   self.staging_server_site_name)
+        else:
+            session_key = create_pre_authenticated_session(email)
+        ## установить cookie, которые нужны для первого посещения домена.
+        ## страницы 404 загружаются быстрее всего!
+        self.browser.get(self.live_server_url + "/404_no_such_url/")
+        self.browser.add_cookie(dict(
+            name=settings.SESSION_COOKIE_NAME,
+            value=session_key,
+            path='/',
+        ))
