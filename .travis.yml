@@ -1,8 +1,11 @@
+dist: xenial
 language: python
 python:
   - "3.9"
 addons:
   firefox: latest
+services:
+  - xvfb
 before_install:
   - wget -N https://github.com/mozilla/geckodriver/releases/download/v0.29.1/geckodriver-v0.29.1-linux64.tar.gz -O ~/geckodriver.tar.gz
   - tar -xzf ~/geckodriver.tar.gz -C $(dirname $(which python))
@@ -12,4 +15,4 @@ install:
 script:
   - python manage.py test lists accounts
   - pip install selenium fabric3
-  - python manage.py test functional_tests
+  - xvfb-run python manage.py test functional_tests
