@@ -33,7 +33,7 @@ class ItemValidationTest(FunctionalTest):
         list_page.get_item_input_box().send_keys(Keys.ENTER)
 
         # И снова браузер не подчинится
-        list_page.wait_for_row_in_list_table('1: Buy milk')
+        list_page.wait_for_row_in_list_table('Buy milk', 1)
         self.wait_for(lambda: self.browser.find_element_by_css_selector(
             '#id_text:invalid'
         ))
@@ -44,8 +44,8 @@ class ItemValidationTest(FunctionalTest):
             '#id_text:valid'
         ))
         list_page.get_item_input_box().send_keys(Keys.ENTER)
-        list_page.wait_for_row_in_list_table('1: Buy milk')
-        list_page.wait_for_row_in_list_table('2: Make tea')
+        list_page.wait_for_row_in_list_table('Buy milk', 1)
+        list_page.wait_for_row_in_list_table('Make tea', 2)
 
     def test_cannot_add_duplicate_items(self):
         """тест: нельзя добавлять повторяющиеся элементы"""
