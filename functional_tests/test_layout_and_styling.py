@@ -17,7 +17,6 @@ class LayoutAndStylingTest(FunctionalTest):
             512,
             delta=10
         )
-        self.fail()
         # Она начинает новый список и видит, что поле ввода там тоже
         # аккуратно центировано
         self.add_list_item('testing')
