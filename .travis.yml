@@ -16,3 +16,4 @@ script:
   - python manage.py test lists accounts
   - pip install selenium fabric3
   - xvfb-run -a python manage.py test functional_tests
+  - phantomjs lists/static/tests/runner.js lists/static/tests/tests.html
