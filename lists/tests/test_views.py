@@ -162,7 +162,6 @@ class NewListViewIntegratedTest(TestCase):
         self.assertContains(response, escape(EMPTY_ITEM_ERROR))
 
 
-
 @patch('lists.views.NewListForm')
 class NewListViewUnitTest(unittest.TestCase):
     """модульный тест нового представления списка"""
@@ -235,3 +234,71 @@ class MyListTest(TestCase):
         correct_user = User.objects.create(email='a@b.com')
         response = self.client.get('/lists/users/a@b.com/')
         self.assertEqual(response.context['owner'], correct_user)
+
+
+class ShareListTest(TestCase):
+    """Тест обмена списками"""
+
+    def test_post_redirects_to_list_page(self):
+        """тест: POST переадресует на страницу того же списка"""
+        other_owner = User.objects.create(email='a@b.com')
+        List.objects.create(owner=other_owner)
+        list_id = List.objects.create().id
+        response = self.client.post(
+            f'/lists/{list_id}/share',
+            data={'sharee': other_owner.email}
+        )
+        self.assertRedirects(response, f'/lists/{list_id}/')
+
+    def test_post_saves_to_shared_with(self):
+        """тест: POST с данными другого пользователя сохраняет в shared_with списка"""
+        list_ = List.objects.create()
+        other_owner = User.objects.create(email='share@email.com')
+        List.objects.create(owner=other_owner)
+        self.client.post(
+            f'/lists/{list_.id}/share',
+            data={'sharee': other_owner.email}
+        )
+        self.assertIn(other_owner, list_.shared_with.all())
+
+    def test_shared_with_users_shows_at_page(self):
+        """тест: пользователи с кем поделились отображаются на старице"""
+        list_ = List.objects.create()
+        other_owner = User.objects.create(email='share@email.com')
+        List.objects.create(owner=other_owner)
+        self.client.post(
+            f'/lists/{list_.id}/share',
+            data={'sharee': other_owner.email},
+        )
+        response = self.client.get(f'/lists/{list_.id}/')
+        self.assertContains(response, other_owner.email)
+
+    def test_other_user_can_see_shared_list(self):
+        """тест: другой пользователь можеть видеть спискок"""
+        owner = User.objects.create(email='a@b.com')
+        list_ = List.create_new('ab item', owner=owner)
+        other_owner = User.objects.create(email='share@email.com')
+        List.create_new('Share item', owner=other_owner)
+        self.client.post(
+            f'/lists/{list_.id}/share',
+            data={'sharee': other_owner.email},
+        )
+        response = self.client.get(
+            f'/lists/users/{other_owner.email}/'
+        )
+        self.assertContains(response, 'ab item')
+
+    def test_other_user_can_see_list_owner(self):
+        owner = User.objects.create(email='a@b.com')
+        list_ = List.create_new('ab item', owner=owner)
+        other_owner = User.objects.create(email='share@email.com')
+        List.create_new('Share item', owner=other_owner)
+        self.client.post(
+            f'/lists/{list_.id}/share',
+            data={'sharee': other_owner.email},
+        )
+        response = self.client.get(
+            f'/lists/users/{other_owner.email}/'
+        )
+        self.assertContains(response, owner.email)
+
